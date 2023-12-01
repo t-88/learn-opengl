@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 class Shader
 {
@@ -19,5 +20,6 @@ public:
     void set_bool(std::string name, bool val);
     void set_int(std::string name, int val);
     void set_float(std::string name, float val);
+    void set_vec3(std::string name, std::vector<float> val);
 };
 
