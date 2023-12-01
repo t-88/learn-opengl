@@ -81,6 +81,7 @@ int main() {
 
     Shader shader_prog("shader.vert","shader.frag");
 
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
@@ -88,10 +89,9 @@ int main() {
             glfwSetWindowShouldClose(window,true);
         }
 
-
         shader_prog.enable();
 
-        
+
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,indices);
 
