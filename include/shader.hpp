@@ -17,7 +17,7 @@ public:
     void free();
 
     void set_bool(std::string name, bool val);
-    void set_int(std::string name, bool val);
-    void set_float(std::string name, bool val);
+    void set_int(std::string name, int val);
+    void set_float(std::string name, float val);
 };
 

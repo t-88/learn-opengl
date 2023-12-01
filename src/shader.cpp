@@ -66,10 +66,10 @@ void Shader::enable() {
 void Shader::set_bool(std::string name, bool val) {
     glUniform1i(glGetUniformLocation(ID,name.c_str()),val);
 }
-void Shader::set_int(std::string name, bool val) {
+void Shader::set_int(std::string name, int val) {
     glUniform1i(glGetUniformLocation(ID,name.c_str()),val);
 }
-void Shader::set_float(std::string name, bool val) {
+void Shader::set_float(std::string name, float val) {
     glUniform1f(glGetUniformLocation(ID,name.c_str()),val);
 }
 
