@@ -13,7 +13,6 @@
 
 
 
-
 void on_window_resize(GLFWwindow* window, int w, int h) {
     // do nothing window is not resizable
 }
