@@ -1,11 +1,18 @@
 #include <stdio.h>
 #include <string>
-#include "glad/glad.h"
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #define WIDTH 800
 #define HEIGHT 600
-#define ERROR_DY(msg,...) printf("[ERROR] " msg"\n",__VA_ARGS__);
+
+
+#define ERROR_DY(msg,...) \
+    _Pragma("GCC diagnostic push")\
+        _Pragma("GCC diagnostic ignored \"-Wformat-extra-args\"")\
+    printf("[ERROR] " msg"\n",__VA_ARGS__); \
+    _Pragma("GCC diagnostic pop")
+
 #define ERROR(msg) ERROR_DY(msg,NULL) 
 
 
