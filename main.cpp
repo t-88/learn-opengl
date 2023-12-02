@@ -8,7 +8,11 @@
 #include "utils.hpp"
 #include "shader.hpp"
 
-#define WIDTH 800
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#define WIDTH  600
 #define HEIGHT 600
 
 
@@ -45,13 +49,15 @@ int main() {
 
 
     float vertices[] = {
-        -0.5, -0.5, 0.0 ,1. ,0. ,0. ,
-        0.5,  -0.5,  0.,0. ,1. ,0. ,
-        0., 0.5,  0.  ,0. ,0. ,1. ,
+        -0.5,  -0.5,  0., 1. ,0. ,0., 0.0, 0.0,
+        -0.5,   0.5,  0., 0. ,1. ,0., 0.0, 1.0,
+         0.5,  -0.5,  0., 0. ,0. ,1., 1.0, 0.0,
+         0.5,   0.5,  0., 1. ,1. ,0., 1.0, 1.0,
     };
 
     uint32_t indices[] = {
         0 , 1 , 2,
+        1 , 2 , 3,
     };
 
 
@@ -64,12 +70,15 @@ int main() {
 
     glBindVertexArray(vao);
 
-    glBindBuffer(GL_ARRAY_BUFFER,vbo); // vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER,vbo);
     glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(float) * 6,0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(float) * 8,0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(float) * 6,(void*) (sizeof(float) * 3));
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(float) * 8,(void*) (sizeof(float) * 3));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,sizeof(float) * 8,(void*) (sizeof(float) * 6));
+    glEnableVertexAttribArray(2);
+
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indices),indices,GL_STATIC_DRAW);
@@ -82,6 +91,28 @@ int main() {
     Shader shader_prog("shader.vert","shader.frag");
 
 
+    int tex_w,tex_h;
+    uint8_t* tex_data = stbi_load("./assets/container.jpg",&tex_w,&tex_h,0,3);
+    if(!tex_data) {
+        ERROR("failed to load img");
+        glfwTerminate();
+        exit(-1);
+    }
+
+    uint32_t tex_id;
+    glGenTextures(1,&tex_id);
+    glBindTexture(GL_TEXTURE_2D,tex_id);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_R,GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,tex_w,tex_h,0,GL_RGB,GL_UNSIGNED_BYTE,tex_data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(tex_data);
+
+
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
@@ -90,10 +121,11 @@ int main() {
         }
 
         shader_prog.enable();
-
-
+	
+	glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,tex_id);
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,indices);
+        glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,indices);
 
 
         glfwSwapBuffers(window);
