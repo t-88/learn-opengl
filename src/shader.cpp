@@ -21,6 +21,7 @@ Shader::Shader(std::string vert_path, std::string frag_path) {
         glfwTerminate();
         exit(-1);
     }
+
    
 
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -31,7 +32,7 @@ Shader::Shader(std::string vert_path, std::string frag_path) {
     glGetShaderiv(fragment_shader,GL_COMPILE_STATUS,&shader_status);
     if(!shader_status) {
         glGetShaderInfoLog(fragment_shader,512,NULL,shader_log);
-        ERROR_DY("failed to compile vertex shader %s",shader_log);
+        ERROR_DY("failed to compile fragment shader %s",shader_log);
         glfwTerminate();
         exit(-1);
     }
