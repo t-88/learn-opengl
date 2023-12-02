@@ -1,3 +1,3 @@
 *.o
-build/main
+build/*
 .vscode
