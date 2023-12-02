@@ -5,6 +5,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "utils.hpp"
 #include "shader.hpp"
 
@@ -12,7 +16,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#define WIDTH  600
+#define WIDTH  800
 #define HEIGHT 600
 
 
@@ -113,6 +117,9 @@ int main() {
 
 
 
+    float t;
+
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
@@ -120,9 +127,17 @@ int main() {
             glfwSetWindowShouldClose(window,true);
         }
 
+        t = glfwGetTime();
+
         shader_prog.enable();
+        
+        auto trans = glm::mat4(1.);
+        trans = glm::scale(trans,glm::vec3((sin(t) / 2 + 0.9),0.5,1.));
+        trans = glm::rotate(trans,t,glm::vec3(0.,0.,1.));
+
+        shader_prog.set_mat4x4("transform",glm::value_ptr(trans));
 	
-	glActiveTexture(GL_TEXTURE0);
+	    glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,tex_id);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,indices);

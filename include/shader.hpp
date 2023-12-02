@@ -21,5 +21,6 @@ public:
     void set_int(std::string name, int val);
     void set_float(std::string name, float val);
     void set_vec3(std::string name, std::vector<float> val);
+    void set_mat4x4(std::string name, GLfloat* mat_ptr);
 };
 

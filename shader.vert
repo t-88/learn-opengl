@@ -6,8 +6,10 @@ layout (location = 2) in vec2 _TexCoord;
 out vec3 frag_color;
 out vec2 tex_coord;
 
+uniform mat4 transform;
+
 void main() {
    frag_color = _Color;
    tex_coord = _TexCoord;
-   gl_Position = vec4(_Pos, 1.0);
+   gl_Position = transform * vec4(_Pos, 1.0);
 }
