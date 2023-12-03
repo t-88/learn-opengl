@@ -19,7 +19,29 @@
 #define WIDTH  800
 #define HEIGHT 600
 
+static float dt;
 
+
+
+typedef struct camera_t {
+    glm::vec3 pos, front , up; 
+    float speed = 5.f;
+
+    void process_input(GLFWwindow* window) {
+        if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS) {
+            pos += speed * dt * front;
+        } else if(glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS) {
+            pos -= speed * dt * front;
+        }
+
+        if(glfwGetKey(window,GLFW_KEY_D) == GLFW_PRESS) {
+            pos += speed * dt * glm::normalize(glm::cross(front,up));
+        } else if(glfwGetKey(window,GLFW_KEY_A) == GLFW_PRESS) {
+            pos -= speed * dt * glm::normalize(glm::cross(front,up));
+        }
+    } 
+} camera_t;
+static camera_t camera;
 
 void on_window_resize(GLFWwindow* window, int w, int h) {
     // do nothing window is not resizable
@@ -151,22 +173,15 @@ int main() {
     stbi_image_free(tex_data);
 
 
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
-        glm::vec3(-1.5f, -2.2f, -2.5f),  
-        glm::vec3(-3.8f, -2.0f, -12.3f),  
-        glm::vec3( 2.4f, -0.4f, -3.5f),  
-        glm::vec3(-1.7f,  3.0f, -7.5f),  
-        glm::vec3( 1.3f, -2.0f, -2.5f),  
-        glm::vec3( 1.5f,  2.0f, -2.5f), 
-        glm::vec3( 1.5f,  0.2f, -1.5f), 
-        glm::vec3(-1.3f,  1.0f, -1.5f)  
+    camera = (camera_t){
+        glm::vec3(0.,0.,5.),
+        glm::vec3(0.,0.,-1.),
+        glm::vec3(0.,1.,0.),
     };
 
 
     glm::mat4 model = glm::mat4(1.);
-    glm::mat4 view = glm::translate(glm::mat4(1.f),glm::vec3(0.,0.,-3.));
+    glm::mat4 view = glm::mat4(1.);
     glm::mat4 proj = glm::perspective(glm::radians(45.f),(float)WIDTH/HEIGHT,0.1f,100.f);
 
     shader_prog.enable();
@@ -176,7 +191,6 @@ int main() {
     shader_prog.set_mat4x4("model",glm::value_ptr(model));
 
     
-    float t;
 
     glm::vec3 center_cube_pos   = glm::vec3(0.f,0.f,-2.f);
     float center_cube_rotation   = 0.f;
@@ -186,18 +200,39 @@ int main() {
 
 
 
+
+
+
+    float t;
+    float last_time;
+
     glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
+        
         t = glfwGetTime();
+        dt = t - last_time;
+        last_time = t;
+
+
+
         glfwPollEvents();
 
         if(glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window,true);
         }
 
+        camera.process_input(window);
+
+
 
         shader_prog.enable();
 
+        view = glm::lookAt(
+            camera.pos,
+            camera.pos + camera.front,
+            camera.up
+        );
+        shader_prog.set_mat4x4("view",glm::value_ptr(view));
         
         
 	
