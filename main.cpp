@@ -51,12 +51,48 @@ int main() {
     glfwSetFramebufferSizeCallback(window,on_window_resize);
 
 
-
     float vertices[] = {
-        -0.5,  -0.5,  0., 1. ,0. ,0., 0.0, 0.0,
-        -0.5,   0.5,  0., 0. ,1. ,0., 0.0, 1.0,
-         0.5,  -0.5,  0., 0. ,0. ,1., 1.0, 0.0,
-         0.5,   0.5,  0., 1. ,1. ,0., 1.0, 1.0,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
     uint32_t indices[] = {
@@ -76,12 +112,10 @@ int main() {
 
     glBindBuffer(GL_ARRAY_BUFFER,vbo);
     glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(float) * 8,0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(float) * 5,0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(float) * 8,(void*) (sizeof(float) * 3));
+    glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,sizeof(float) * 5,(void*) (sizeof(float) * 3));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,sizeof(float) * 8,(void*) (sizeof(float) * 6));
-    glEnableVertexAttribArray(2);
 
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ebo);
@@ -96,6 +130,7 @@ int main() {
 
 
     int tex_w,tex_h;
+    stbi_set_flip_vertically_on_load(true);
     uint8_t* tex_data = stbi_load("./assets/container.jpg",&tex_w,&tex_h,0,3);
     if(!tex_data) {
         ERROR("failed to load img");
@@ -116,36 +151,87 @@ int main() {
     stbi_image_free(tex_data);
 
 
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f), 
+        glm::vec3( 2.0f,  5.0f, -15.0f), 
+        glm::vec3(-1.5f, -2.2f, -2.5f),  
+        glm::vec3(-3.8f, -2.0f, -12.3f),  
+        glm::vec3( 2.4f, -0.4f, -3.5f),  
+        glm::vec3(-1.7f,  3.0f, -7.5f),  
+        glm::vec3( 1.3f, -2.0f, -2.5f),  
+        glm::vec3( 1.5f,  2.0f, -2.5f), 
+        glm::vec3( 1.5f,  0.2f, -1.5f), 
+        glm::vec3(-1.3f,  1.0f, -1.5f)  
+    };
 
+
+    glm::mat4 model = glm::mat4(1.);
+    glm::mat4 view = glm::translate(glm::mat4(1.f),glm::vec3(0.,0.,-3.));
+    glm::mat4 proj = glm::perspective(glm::radians(45.f),(float)WIDTH/HEIGHT,0.1f,100.f);
+
+    shader_prog.enable();
+
+    shader_prog.set_mat4x4("view",glm::value_ptr(view));
+    shader_prog.set_mat4x4("proj",glm::value_ptr(proj));
+    shader_prog.set_mat4x4("model",glm::value_ptr(model));
+
+    
     float t;
 
+    glm::vec3 center_cube_pos   = glm::vec3(0.f,0.f,-2.f);
+    float center_cube_rotation   = 0.f;
 
+    glm::vec3 rotating_cube_pos   = glm::vec3(0.f,0.f,-4.f);
+    float rotating_cube_rotation   = 0.f;
+
+
+
+    glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
+        t = glfwGetTime();
         glfwPollEvents();
 
         if(glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window,true);
         }
 
-        t = glfwGetTime();
 
         shader_prog.enable();
-        
-        auto trans = glm::mat4(1.);
-        trans = glm::scale(trans,glm::vec3((sin(t) / 2 + 0.9),0.5,1.));
-        trans = glm::rotate(trans,t,glm::vec3(0.,0.,1.));
 
-        shader_prog.set_mat4x4("transform",glm::value_ptr(trans));
+        
+        
 	
 	    glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,tex_id);
+
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,indices);
+        
+
+        center_cube_rotation += 2;
+        glm::mat4 model = glm::mat4(1.f);
+        model = glm::translate(model,center_cube_pos);
+        model = glm::rotate(model,glm::radians(center_cube_rotation),glm::vec3(1.f,1.f,1.f));
+        shader_prog.set_mat4x4("model",glm::value_ptr(model));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+        rotating_cube_rotation += 1; 
+        model = glm::mat4(1.f);
+        model = glm::translate(model,rotating_cube_pos);
+        model = glm::rotate(model,glm::radians(rotating_cube_rotation),glm::vec3(1.f,0.f,0.f));
+        model = glm::rotate(model,glm::radians(rotating_cube_rotation / 2),glm::vec3(0.f,1.f,0.f));
+        model = glm::rotate(model,glm::radians(rotating_cube_rotation / 4),glm::vec3(0.f,0.f,1.f));
+        model = glm::translate(model,glm::vec3(0.f,0.,3.));
+        shader_prog.set_mat4x4("model",glm::value_ptr(model));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+
 
 
         glfwSwapBuffers(window);
         glClearColor(0.f,0.f,0.f,1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     
     shader_prog.free();
