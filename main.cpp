@@ -20,6 +20,9 @@
 #define HEIGHT 600
 
 static float dt;
+float mouse_last_x = 400, mouse_last_y = 300;
+float pitch  =  0.0, yaw = -90.0;
+bool init_mouse = false;
 
 
 
@@ -46,6 +49,33 @@ static camera_t camera;
 void on_window_resize(GLFWwindow* window, int w, int h) {
     // do nothing window is not resizable
 }
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if(!init_mouse) {
+        mouse_last_x = xpos;
+        mouse_last_y = ypos;
+        init_mouse = true;
+        return;
+    }
+
+    float xoffset = xpos - mouse_last_x;
+    float yoffset = - ypos + mouse_last_y;
+
+    mouse_last_x = xpos; 
+    mouse_last_y = ypos;
+
+    xoffset *= 0.1;
+    yoffset *= 0.1;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    if(pitch > 89.0f) {
+        pitch = 89.0f;
+    } else if (pitch < -89.0f) {
+        pitch = -89.0f;
+    }
+}
+
 int main() {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
@@ -200,13 +230,15 @@ int main() {
 
 
 
-
+  
 
 
     float t;
     float last_time;
 
     glEnable(GL_DEPTH_TEST);
+    glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);  
     while (!glfwWindowShouldClose(window)) {
         
         t = glfwGetTime();
@@ -221,6 +253,7 @@ int main() {
             glfwSetWindowShouldClose(window,true);
         }
 
+
         camera.process_input(window);
 
 
@@ -232,6 +265,13 @@ int main() {
             camera.pos + camera.front,
             camera.up
         );
+
+        glm::vec3 dir;
+        dir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        dir.y = sin(glm::radians(pitch)) ;
+        dir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        camera.front = glm::normalize(dir);
+
         shader_prog.set_mat4x4("view",glm::value_ptr(view));
         
         
