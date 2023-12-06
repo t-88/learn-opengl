@@ -88,7 +88,7 @@ int main() {
     glBindVertexArray(0);
 
 
-    Shader shader_prog("shader.vert","shader.frag");
+    Shader shader_prog("examples/simple_texture_shader.vert","examples/simple_texture_shader.frag");
 
 
     int tex_w,tex_h;
