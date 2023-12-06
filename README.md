@@ -17,3 +17,6 @@ baby steps into graphics engineering and development
 
 - coords system example:    
 ![coords system](./dev-imgs/coords_system.gif)
+
+- colors:    
+![colors](./dev-imgs/colors.gif)
