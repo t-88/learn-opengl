@@ -2,12 +2,8 @@
 #include <math.h>
 #include <assert.h>
 #include <string>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp> 
-#include <glm/gtc/type_ptr.hpp>
+#include "pch.hpp"
 
 #include "utils.hpp"
 #include "shader.hpp"
@@ -23,6 +19,7 @@ static float dt;
 float mouse_last_x = 400, mouse_last_y = 300;
 float pitch  =  0.0, yaw = -90.0;
 bool init_mouse = false;
+bool show_mouse = false;
 
 
 
@@ -52,6 +49,7 @@ void on_window_resize(GLFWwindow* window, int w, int h) {
     // do nothing window is not resizable
 }
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if(show_mouse) return;
     if(!init_mouse) {
         mouse_last_x = xpos;
         mouse_last_y = ypos;
@@ -86,8 +84,16 @@ int main() {
     glfwWindowHint(GLFW_RESIZABLE,GLFW_FALSE);
 
 
+
+
     GLFWwindow* window = glfwCreateWindow(WIDTH,HEIGHT,"42",NULL,NULL);
+    glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);  
+
+
     
+
+
     if(window == NULL) {
         ERROR("failed to create window");
         glfwTerminate();
@@ -103,6 +109,14 @@ int main() {
 
     glViewport(0,0,WIDTH,HEIGHT);
     glfwSetFramebufferSizeCallback(window,on_window_resize);
+
+
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    ImGui_ImplGlfw_InitForOpenGL(window,true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
 
     float vertices[] = {
@@ -217,9 +231,12 @@ int main() {
     float t;
     float last_time;
 
+    bool space_pressed = false;
+            static int counter = 0;
+
     glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, mouse_callback);  
+    
+
     while (!glfwWindowShouldClose(window)) {
         // dt
         t = glfwGetTime();
@@ -231,6 +248,18 @@ int main() {
         if(glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window,true);
         }
+        if(glfwGetKey(window,GLFW_KEY_SPACE) == GLFW_PRESS && !space_pressed) {
+            space_pressed = true;
+            show_mouse = !show_mouse;
+            if(show_mouse) {
+                glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_NORMAL);
+            } else {
+                glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
+            }
+        } else if (glfwGetKey(window,GLFW_KEY_SPACE) != GLFW_PRESS) {
+            space_pressed = false;
+        }
+
         camera.process_input(window);
 
 
@@ -249,10 +278,6 @@ int main() {
         
 
 
-     
-        
-
-
         shader_prog_light.enable();
         shader_prog_light.set_mat4x4("view",glm::value_ptr(view));
         shader_prog_light.set_mat4x4("model",glm::value_ptr(model_light));
@@ -266,6 +291,28 @@ int main() {
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
+
+
+
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        if(ImGui::ColorPicker3("light color",&light_color[0])) {
+            shader_prog_light.enable();
+            shader_prog_light.set_vec3("light_color",light_color);
+
+            std::vector<float> obj_color = {0.25,0.3,1.};
+            shader_prog_obj.enable();
+            shader_prog_obj.set_vec3("obj_color",obj_color);
+            shader_prog_obj.set_vec3("light_color",light_color);
+        }
+        ImGui::EndFrame();
+        
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+     
 
 
         glfwSwapBuffers(window);

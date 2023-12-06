@@ -1,8 +1,5 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "pch.hpp"
 #include "shader.hpp"
-#include "utils.hpp"
-
 
 
 static char shader_log[512];
