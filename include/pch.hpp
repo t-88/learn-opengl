@@ -14,5 +14,6 @@
 
 
 #include "utils.hpp"
+#include "stb_image.h"
 
 #endif

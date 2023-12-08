@@ -11,7 +11,7 @@ add_executable(
         ${IMGUI_SOURCE} lib/imgui-1.90/backends/imgui_impl_glfw.cpp lib/imgui-1.90/backends/imgui_impl_opengl3.cpp 
         ${SOURCE_FILES} 
     )
-include_directories(lib include lib/glad/include/ lib/imgui-1.90)
+include_directories(lib include/ lib/glad/include/ lib/imgui-1.90)
 target_link_libraries(main PRIVATE glfw PRIVATE OpenGL)
 
 add_custom_target(
