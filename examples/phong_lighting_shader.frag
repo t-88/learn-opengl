@@ -23,7 +23,7 @@ void main() {
 
     vec3 view_dir = normalize(camera_pos - frag_pos);
     vec3 reflect_dir = reflect(-light_dir,frag_norm);
-    float specStrength = 0.5;
+    float specStrength = 0.1;
     float spec = pow(max(dot(view_dir,reflect_dir),0.),32);
     vec3 specular = specStrength * spec * light_color;
 

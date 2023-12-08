@@ -20,3 +20,6 @@ baby steps into graphics engineering and development
 
 - colors:    
 ![colors](./dev-imgs/colors.gif)
+
+- phong lighting:    
+![lighting](./dev-imgs/phong_lighing.gif)    
