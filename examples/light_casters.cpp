@@ -212,8 +212,8 @@ int main() {
     glBindVertexArray(0);
 
 
-    Shader shader_prog_obj("shader.vert","shader.frag");
-    Shader shader_prog_light("shader.vert","shader_light.frag");
+    Shader shader_prog_obj("examples/light_casters_shader.vert","examples/light_casters_shader.frag");
+    Shader shader_prog_light("examples/light_casters_shader.vert","examples/light_casters_shader_light.frag");
 
 
 
