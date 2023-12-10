@@ -3,6 +3,13 @@ baby steps into graphics engineering and development
 
 
 ## Run
+**This project depends on assimp install assimp** 
+```
+    sudo apt-get update
+    sudo apt-get install libassimp-dev
+```    
+or **[github](https://github.com/assimp/assimp/blob/master/Build.md)**   
+
 -   run main code is on ```./run```
 -   there is examples sections u can run them using ```./run_examples name_of_example``` example ```./run_examples rotating_colors```
 

@@ -12,7 +12,7 @@ add_executable(
         ${SOURCE_FILES} 
     )
 include_directories(lib include/ lib/glad/include/ lib/imgui-1.90)
-target_link_libraries(main PRIVATE glfw PRIVATE OpenGL)
+target_link_libraries(main PRIVATE glfw PRIVATE OpenGL PRIVATE assimp)
 
 add_custom_target(
     run
