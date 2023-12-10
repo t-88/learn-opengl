@@ -1,12 +1,13 @@
 #pragma once
 #include <stdint.h>
+#include <string>
 
 class Texture
 {
-private:
-    uint32_t ID;
-    int width, height, comps ; 
 public:
+    uint32_t ID;
+    std::string type;
+
     Texture(const char* fp,int out_comps = 3);
     ~Texture();
 

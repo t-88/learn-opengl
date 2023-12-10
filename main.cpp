@@ -12,6 +12,7 @@
 
 
 
+
 #define WIDTH  800
 #define HEIGHT 600
 
@@ -136,6 +137,8 @@ void imgui_init(GLFWwindow* window) {
 
 
 void events(GLFWwindow* window);
+
+
 
 
 int main() {
