@@ -11,6 +11,8 @@
 #include "texture.hpp"
 
 
+#include "model.hpp"
+
 
 
 #define WIDTH  800
@@ -270,20 +272,11 @@ int main() {
         glm::vec3(0.,1.,0.),
     };
 
-    std::vector<glm::vec3> poses = {
-        glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
-        glm::vec3(-1.5f, -2.2f, -2.5f),  
-        glm::vec3(-3.8f, -2.0f, -12.3f),  
-        glm::vec3( 2.4f, -0.4f, -3.5f),  
-        glm::vec3(-1.7f,  3.0f, -7.5f),  
-        glm::vec3( 1.3f, -2.0f, -2.5f),  
-        glm::vec3( 1.5f,  2.0f, -2.5f), 
-        glm::vec3( 1.5f,  0.2f, -1.5f), 
-        glm::vec3(-1.3f,  1.0f, -1.5f)  
-    };
-
+ 
   
+    Model model_backback("assets/backpack/backpack.obj");
+
+
     glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
         t = glfwGetTime();
@@ -301,32 +294,14 @@ int main() {
         shader_prog_light.set_mat4x4("model",glm::value_ptr(model_light));
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
         texture.bind();
         texture_specular.bind(1);
 
 
         shader_prog_obj.enable();
-        shader_prog_obj.set_mat4x4("view",glm::value_ptr(view));
-        shader_prog_obj.set_vec3("light.position",{camera.pos.x,camera.pos.y,camera.pos.z});
-        shader_prog_obj.set_vec3("light.direction", {camera.front.x,camera.front.y,camera.front.z});
-        shader_prog_obj.set_float("light.cutOff",   glm::cos(glm::radians(12.5)));
-        shader_prog_obj.set_float("light.outer_cutOff",   glm::cos(glm::radians(20.)));
-        glBindVertexArray(vao);
-
-        float angle = 0;
-        for (size_t i = 0; i < poses.size(); i++) {
-            glm::mat4 model_obj = glm::mat4(1.);
-            model_obj = glm::translate(model_obj,poses[i]);
-            model_obj = glm::rotate(model_obj,glm::radians(angle),glm::vec3(1.,1.,0.));
-
-            angle += 25;
-
-            shader_prog_obj.set_mat4x4("model",glm::value_ptr(model_obj));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-        
-
+        shader_prog_light.set_mat4x4("view",glm::value_ptr(view));
+        shader_prog_light.set_mat4x4("model",glm::value_ptr(model_light));
+        model_backback.draw(shader_prog_obj);
 
 
         ImGui_ImplOpenGL3_NewFrame();
