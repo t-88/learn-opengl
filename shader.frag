@@ -48,29 +48,15 @@ void main() {
 
     vec3 view_dir = normalize(camera_pos - frag_pos);
     vec3 reflect_dir = reflect(-light_dir,frag_norm);
-    float spec = pow(max(dot(view_dir,reflect_dir),0.),material.shininess);
+    float spec = pow(max(dot(view_dir,reflect_dir),0.),32);
 
 
-    vec3 specular = light.specular *  spec * vec3(texture(material.specular,frag_tex_coords));
-    vec3 ambient = light.ambient *  vec3(texture(material.diffuse,frag_tex_coords));
-    vec3 diffuse =  diff * light.diffuse * vec3(texture(material.diffuse,frag_tex_coords));
+    vec3 specular =  spec * vec3(texture(texture_specular1,frag_tex_coords));
+    vec3 ambient = vec3(texture(texture_diffuse1,frag_tex_coords));
+    vec3 diffuse =  diff * vec3(texture(texture_diffuse1,frag_tex_coords));
 
+    vec4 tex_color = texture(texture_diffuse1,frag_tex_coords);
 
-    float light_dis = length(frag_pos - light.position);
-    float attenuation = 1. / (light.constant + light_dis * light.linear + (light_dis * light_dis) *  light.quadratic);
-    diffuse *=  attenuation;
-    specular *= attenuation;
-    ambient *=  attenuation;
-
-    // spot light
-    float theta = dot(light_dir,normalize(-light.direction));
-    float intensity = clamp((theta - light.outer_cutOff) / (light.cutOff - light.outer_cutOff),0.,1.);
-    diffuse *= intensity;
-    specular *= intensity;
-
-    
-
-    // vec3 result = (diffuse + ambient + specular);
-    // FragColor = vec4(result,1.);
-    FragColor = vec4(1.,1.,1.,1.);
+    vec3 result = (diffuse + ambient + specular);
+    FragColor = vec4(result,1.);
 }

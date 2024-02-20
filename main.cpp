@@ -76,6 +76,7 @@ void imgui_init(GLFWwindow* window) {
 int main() {
     auto window =  glfw_opengl_init();
     imgui_init(window);
+    stbi_set_flip_vertically_on_load(true);
 
     camera = Camera(WIDTH,HEIGHT);
 
@@ -99,10 +100,9 @@ int main() {
     shader_prog_obj.enable();
     shader_prog_obj.set_mat4x4("proj",glm::value_ptr(proj));
     shader_prog_obj.set_mat4x4("model",glm::value_ptr(model));
+    shader_prog_obj.set_vec3("light.position",{light_pos[0],light_pos[1],light_pos[2]});
     
     
-
-
     camera.pos = glm::vec3(0.,0.,4.);
     camera.front = glm::vec3(0.,0.,0.);
     camera.up = glm::vec3(0.,1.,0.);
