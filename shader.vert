@@ -14,8 +14,6 @@ uniform mat4 proj;
 
 
 void main() {
-
-
    gl_Position = proj * view * model * vec4(_Pos, 1.0);
 
    frag_pos = (model * vec4(_Pos,1.)).xyz;

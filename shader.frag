@@ -70,6 +70,7 @@ void main() {
 
     
 
-    vec3 result = (diffuse + ambient + specular);
-    FragColor = vec4(result,1.);
+    // vec3 result = (diffuse + ambient + specular);
+    // FragColor = vec4(result,1.);
+    FragColor = vec4(1.,1.,1.,1.);
 }

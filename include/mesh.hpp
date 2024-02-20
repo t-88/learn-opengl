@@ -16,14 +16,16 @@ struct Vertex {
 class Mesh {
 private:
     uint32_t VAO,VBO,EBO;
-    void setup_mesh();
 public:
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     std::vector<Texture> textures;
 
 
+    Mesh();
     Mesh(std::vector<Vertex>,std::vector<uint32_t>,std::vector<Texture>);
     ~Mesh();
+    void setup_mesh();
     void draw(Shader& shader);
+
 };

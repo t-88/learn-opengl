@@ -4,7 +4,7 @@
 Texture::Texture(const char* fp,int out_comps) {
     glGenTextures(1,&ID);
 
-    path = fp;
+    path = std::string(fp);
 
     glBindTexture(GL_TEXTURE_2D,ID);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_R,GL_MIRRORED_REPEAT);
